@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "7160180336",
+    "firebase_url": "https://greenearth-68f1c.firebaseio.com",
+    "project_id": "greenearth-68f1c",
+    "storage_bucket": "greenearth-68f1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7160180336:android:c1a4a53f5c1821d7",
+        "android_client_info": {
+          "package_name": "greenearth.united.com.messiah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7160180336-sg891du98mmqmuqlqf14qt651mrg28g2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "greenearth.united.com.messiah",
+            "certificate_hash": "1e8281ae4910af3aa4f962a589e557b2a8bd211c"
+          }
+        },
+        {
+          "client_id": "7160180336-p8kho59vhpk2f0g0s9hmjvbhv68o1grj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ9ifb6EQOhvBXcXII8T3Mo-6gBSVdLGI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7160180336-p8kho59vhpk2f0g0s9hmjvbhv68o1grj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "7160180336-vjllj4il2361t0pnsvc02thgueahbj1r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.united.GreenEarth"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
