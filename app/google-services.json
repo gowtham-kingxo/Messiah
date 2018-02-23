@@ -15,6 +15,10 @@
       },
       "oauth_client": [
         {
+          "client_id": "7160180336-5fq9us1m1dede1alitbv1hue3r1dvq4a.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "7160180336-sg891du98mmqmuqlqf14qt651mrg28g2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -40,15 +44,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "7160180336-p8kho59vhpk2f0g0s9hmjvbhv68o1grj.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "7160180336-vjllj4il2361t0pnsvc02thgueahbj1r.apps.googleusercontent.com",
+              "client_id": "7160180336-10c0i63lvmm0iod0i42u87tge7llbns9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.united.GreenEarth"
               }
+            },
+            {
+              "client_id": "7160180336-5fq9us1m1dede1alitbv1hue3r1dvq4a.apps.googleusercontent.com",
+              "client_type": 3
             }
           ]
         },
