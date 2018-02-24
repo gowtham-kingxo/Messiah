@@ -98,7 +98,7 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
         if(v == R.id.goToSignUpPage)
         {
 
-            Intent i2 = new Intent(SignInPage.this, MainActivity.class);
+            Intent i2 = new Intent(SignInPage.this, SignUpPage.class);
             startActivity(i2);
             finish();
         }

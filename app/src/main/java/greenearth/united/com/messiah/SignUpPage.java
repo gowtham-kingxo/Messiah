@@ -27,16 +27,22 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
-public  class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public  class SignUpPage extends AppCompatActivity implements View.OnClickListener {
 
 
-    EditText username;
-    EditText password;
+    EditText email, username, profession, age;
+    EditText password, confirm_password;
     Button submit;
     Button fbLogin;
     FirebaseAuth mAuth;
-    String Entered_Username = null;
+    String Entered_email = null;
     String Entered_Password = null;
+    String Entered_confirm_Password = null;
+    String Entered_profession = null;
+    String Entered_age = null;
+    String Entered_username = null;
+
+
 
 
 
@@ -45,10 +51,13 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up_page);
 
+        email = (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
+        profession = (EditText) findViewById(R.id.profession);
+        age = (EditText) findViewById(R.id.age);
+        confirm_password = (EditText) findViewById(R.id.confirmpassword);
 
         findViewById(R.id.submit).setOnClickListener(this);
 
@@ -102,7 +111,7 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
 
         Toast.makeText(this, "You are logged in", Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(MainActivity.this, HomeScreen.class);
+        Intent i = new Intent(SignUpPage.this, HomeScreen.class);
         startActivity(i);
         finish();
 
@@ -132,7 +141,7 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("fb:", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(SignUpPage.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI();
                         }
@@ -148,22 +157,32 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
 
              //Toast.makeText(this, "Hii submit clicked", Toast.LENGTH_SHORT).show();
 
-            Entered_Username = username.getText().toString();
+            Entered_email = email.getText().toString();
             Entered_Password = password.getText().toString();
 
-            // Toast.makeText(this, "Email: "+Entered_Username+" Password: "+Entered_Password, Toast.LENGTH_SHORT).show();
+        Entered_confirm_Password = confirm_password.getText().toString();
 
-            if (!Entered_Username.equals("")) {
+        if(Entered_Password != Entered_confirm_Password)
+            Toast.makeText(this, "passwords does not match", Toast.LENGTH_SHORT).show();
+
+        Entered_profession = profession.getText().toString();
+        Entered_age = age.getText().toString();
+        Entered_username = username.getText().toString();
+
+
+            // Toast.makeText(this, "Email: "+Entered_email+" Password: "+Entered_Password, Toast.LENGTH_SHORT).show();
+
+            if (!Entered_email.equals("")) {
                 if (!Entered_Password.equals("")) {
-                    mAuth.createUserWithEmailAndPassword(Entered_Username, Entered_Password)
+                    mAuth.createUserWithEmailAndPassword(Entered_email, Entered_Password)
                             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful())
                                     {
-                                        Toast.makeText(MainActivity.this, "user created", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SignUpPage.this, "user created", Toast.LENGTH_SHORT).show();
 
-                                        Intent i = new Intent(MainActivity.this, HomeScreen.class);
+                                        Intent i = new Intent(SignUpPage.this, HomeScreen.class);
                                         startActivity(i);
                                         finish();
 
@@ -175,14 +194,14 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
                                             try {
                                                 throw task.getException();
                                             } catch (FirebaseAuthWeakPasswordException e) {
-                                                Toast.makeText(MainActivity.this, "Weak Password", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUpPage.this, "Weak Password", Toast.LENGTH_SHORT).show();
                                             } catch (FirebaseAuthInvalidCredentialsException e) {
 
-                                                Toast.makeText(MainActivity.this, "Invalid email id", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUpPage.this, "Invalid email id", Toast.LENGTH_SHORT).show();
 
                                             } catch (FirebaseAuthUserCollisionException e) {
 
-                                                Toast.makeText(MainActivity.this, "email id already exists", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUpPage.this, "email id already exists", Toast.LENGTH_SHORT).show();
 
                                             } catch (Exception e) {
                                                 Log.e("General Exception", e.getMessage());
