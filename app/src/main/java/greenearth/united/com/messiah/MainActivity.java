@@ -52,6 +52,7 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.submit).setOnClickListener(this);
 
+
         // findViewById(R.id.fbLogin).setOnClickListener(this);
 
 
@@ -177,7 +178,7 @@ public  class MainActivity extends AppCompatActivity implements View.OnClickList
                                                 Toast.makeText(MainActivity.this, "Weak Password", Toast.LENGTH_SHORT).show();
                                             } catch (FirebaseAuthInvalidCredentialsException e) {
 
-                                                Toast.makeText(MainActivity.this, "Invalid email id or password", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(MainActivity.this, "Invalid email id", Toast.LENGTH_SHORT).show();
 
                                             } catch (FirebaseAuthUserCollisionException e) {
 

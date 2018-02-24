@@ -30,7 +30,7 @@ public class HomeScreen extends AppCompatActivity implements View.OnClickListene
 
         Toast.makeText(this, "Successfully logged out", Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(HomeScreen.this, MainActivity.class);
+        Intent i = new Intent(HomeScreen.this, SignInPage.class);
         startActivity(i);
         finish();
     }
