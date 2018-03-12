@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#ffffff">
 
     <ImageView
@@ -14,23 +13,22 @@
         android:src="@drawable/signinimage" />
 
     <EditText
-        android:layout_marginTop="30dp"
         android:id="@+id/email"
         android:layout_width="250dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
+        android:layout_marginTop="30dp"
         android:hint="Email"
-        android:inputType="textEmailAddress"
-        />
+        android:inputType="textEmailAddress" />
+
     <EditText
-        android:layout_marginTop="20dp"
         android:id="@+id/password"
         android:layout_width="250dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:hint="Password"
-        android:inputType="textPassword"
-        />
+        android:inputType="textPassword" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,13 +37,13 @@
         android:orientation="horizontal">
 
         <Button
-        android:id="@+id/signIn"
-        android:layout_width="90dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="100dp"
+            android:id="@+id/signIn"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="100dp"
 
-        android:layout_marginTop="10dp"
-        android:text="sign in" />
+            android:layout_marginTop="10dp"
+            android:text="sign in" />
 
         <Button
             android:id="@+id/goToSignUpPage"
@@ -55,11 +53,7 @@
             android:text="sign up" />
 
 
-
-
     </LinearLayout>
-
-
 
 
 </LinearLayout>

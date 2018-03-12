@@ -7,11 +7,20 @@
 
     <Button
         android:id="@+id/logout"
+        android:layout_marginTop="50dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="right"
         android:text="logout"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
 
 
 </LinearLayout>

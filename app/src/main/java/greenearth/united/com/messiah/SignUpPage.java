@@ -26,6 +26,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public  class SignUpPage extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,6 +44,8 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
     String Entered_age = null;
     String Entered_username = null;
 
+    DatabaseReference mDatabase;
+
 
 
 
@@ -52,6 +56,10 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_page);
+
+        //getting mDatabase to point to the root of the firebase database
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         email = (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);
