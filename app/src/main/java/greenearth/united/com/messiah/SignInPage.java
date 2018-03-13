@@ -64,7 +64,7 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
 
                                         //Intent - move from sign in page to newsfeed page
 
-                                        Intent i = new Intent(SignInPage.this, HomeScreen.class);
+                                        Intent i = new Intent(SignInPage.this, ActivitiesFeed.class);
                                         startActivity(i);
                                         finish();
 
