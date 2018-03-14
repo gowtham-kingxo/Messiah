@@ -21,11 +21,15 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -33,6 +37,8 @@ public class AccountSetup extends AppCompatActivity {
 
     private CircleImageView setUpIamge;
     private Uri mainImageURI = null;
+
+    String user_ID = "";
 
     private TextView Acc_Settings_Name;
     private Button Acc_Settings_Btn;
@@ -42,6 +48,8 @@ public class AccountSetup extends AppCompatActivity {
 
     private ProgressBar Acc_Settings_ProgressBar;
 
+    private FirebaseFirestore firebaseFirestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +57,7 @@ public class AccountSetup extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         Acc_Settings_Name = findViewById(R.id.Acc_Settings_Name);
         Acc_Settings_Btn = findViewById(R.id.AccountSettingButton);
@@ -65,13 +74,13 @@ public class AccountSetup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String user_name = Acc_Settings_Name.getText().toString();
+                final String user_name = Acc_Settings_Name.getText().toString();
 
                 if(!TextUtils.isEmpty(user_name) && mainImageURI != null)
                 {
                     //Upload Image in firebase
 
-                    String user_ID = firebaseAuth.getCurrentUser().getUid();
+                     user_ID = firebaseAuth.getCurrentUser().getUid();
 
                     Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
 
@@ -86,16 +95,45 @@ public class AccountSetup extends AppCompatActivity {
                             if(task.isSuccessful())
                             {
                                 Uri download_uri = task.getResult().getDownloadUrl();
-                                Toast.makeText(AccountSetup.this, "The image is uploaded", Toast.LENGTH_SHORT).show();
+
+                                Map<String, String> userMap = new HashMap<>();
+                                userMap.put("name",user_name);
+                                userMap.put("image",download_uri.toString());
+
+                                //FIRESTORE UPLOAD
+
+                                firebaseFirestore.collection("Users").document(user_ID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task)
+                                    {
+                                        if(task.isSuccessful())
+                                        {
+                                            Toast.makeText(AccountSetup.this, "The user settings are updated", Toast.LENGTH_SHORT).show();
+                                            Intent Activities_Feed_Intent = new Intent(AccountSetup.this, ActivitiesFeed.class);
+                                            startActivity(Activities_Feed_Intent);
+                                            finish();
+
+                                        }
+                                        else
+                                        {
+                                            String error = task.getException().getMessage();
+                                            Toast.makeText(AccountSetup.this, "Firestore ERROR: "+error, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                                // Toast.makeText(AccountSetup.this, "The image is uploaded", Toast.LENGTH_SHORT).show();
+                                Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
                             }
                             else
                             {
                                 String error = task.getException().getMessage();
-                                Toast.makeText(AccountSetup.this, "Error :"+ error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AccountSetup.this, "Image Error :"+ error, Toast.LENGTH_SHORT).show();
+
+                                Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
                             }
 
 
-                        Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+
 
                         }
                     });
