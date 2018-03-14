@@ -64,14 +64,14 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
 
                                         //Intent - move from sign in page to newsfeed page
 
-                                        Intent i = new Intent(SignInPage.this, ActivitiesFeed.class);
+                                        Intent i = new Intent(SignInPage.this, AccountSetup.class);
                                         startActivity(i);
                                         finish();
 
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w("Sign-In LOG", "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(SignInPage.this, "Authentication failed.",
+                                        Toast.makeText(SignInPage.this, "Authentication failed."+ task.getException().getMessage(),
                                                 Toast.LENGTH_SHORT).show();
 
                                         try

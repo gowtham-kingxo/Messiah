@@ -66,6 +66,7 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
         profession = (EditText) findViewById(R.id.profession);
         age = (EditText) findViewById(R.id.age);
         confirm_password = (EditText) findViewById(R.id.confirmpassword);
+        password = findViewById(R.id.password);
 
         findViewById(R.id.submit).setOnClickListener(this);
 
@@ -119,7 +120,7 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
 
         Toast.makeText(this, "You are logged in", Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(SignUpPage.this, ActivitiesFeed.class);
+        Intent i = new Intent(SignUpPage.this, AccountSetup.class);
         startActivity(i);
         finish();
 
@@ -168,20 +169,24 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
             Entered_email = email.getText().toString();
             Entered_Password = password.getText().toString();
 
-        Entered_confirm_Password = confirm_password.getText().toString();
+            //Entered_Password = "hihello66";
 
-        if(Entered_Password != Entered_confirm_Password)
-            Toast.makeText(this, "passwords does not match", Toast.LENGTH_SHORT).show();
-
-        Entered_profession = profession.getText().toString();
-        Entered_age = age.getText().toString();
-        Entered_username = username.getText().toString();
+//        Entered_confirm_Password = confirm_password.getText().toString();
+//
+//        if(Entered_Password != Entered_confirm_Password)
+//            Toast.makeText(this, "passwords does not match", Toast.LENGTH_SHORT).show();
+//
+//        Entered_profession = profession.getText().toString();
+//        Entered_age = age.getText().toString();
+//        Entered_username = username.getText().toString();
 
 
             // Toast.makeText(this, "Email: "+Entered_email+" Password: "+Entered_Password, Toast.LENGTH_SHORT).show();
 
-            if (!Entered_email.equals("")) {
-                if (!Entered_Password.equals("")) {
+            if (!Entered_email.equals(""))
+            {
+                if (!Entered_Password.equals(""))
+                {
                     mAuth.createUserWithEmailAndPassword(Entered_email, Entered_Password)
                             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -190,7 +195,7 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
                                     {
                                         Toast.makeText(SignUpPage.this, "user created", Toast.LENGTH_SHORT).show();
 
-                                        Intent i = new Intent(SignUpPage.this, HomeScreen.class);
+                                        Intent i = new Intent(SignUpPage.this, AccountSetup.class);
                                         startActivity(i);
                                         finish();
 
