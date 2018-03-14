@@ -100,6 +100,10 @@ public class ActivitiesFeed extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
+            Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
+            startActivity(i);
+            finish();
+
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

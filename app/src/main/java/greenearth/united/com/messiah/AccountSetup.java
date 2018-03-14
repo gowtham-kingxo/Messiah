@@ -18,9 +18,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -49,11 +52,14 @@ public class AccountSetup extends AppCompatActivity {
     private ProgressBar Acc_Settings_ProgressBar;
 
     private FirebaseFirestore firebaseFirestore;
+    private boolean isChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_setup);
+
+
 
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -64,79 +70,101 @@ public class AccountSetup extends AppCompatActivity {
 
         Acc_Settings_ProgressBar = findViewById(R.id.Acc_Settings_ProgressBar);
 
+        //Corrections part 6 27:00
+        Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
+        Acc_Settings_Btn.setEnabled(false);
+
+
         Toolbar setupToolbar = findViewById(R.id.setupToolbar);
         setSupportActionBar(setupToolbar);
         getSupportActionBar().setTitle("Account Setup");
 
         setUpIamge = findViewById(R.id.setupImage);
 
+        //Retrieving user name and Image from Firestore
+
+        user_ID = firebaseAuth.getCurrentUser().getUid();
+
+        firebaseFirestore.collection("Users").document(user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            {
+                if(task.isSuccessful())
+                {
+                    if(task.getResult().exists())
+                    {
+                       String name = task.getResult().getString("name");
+                       String image = task.getResult().getString("image");
+
+                       mainImageURI = Uri.parse(image);
+
+                        RequestOptions placeholderrequest = new RequestOptions();
+                        placeholderrequest.placeholder(R.drawable.defaultprofilepic);
+
+                       Acc_Settings_Name.setText(name);
+
+                        Glide.with(AccountSetup.this).setDefaultRequestOptions(placeholderrequest).load(image).into(setUpIamge);
+
+                    }
+                    else
+                    {
+                        Toast.makeText(AccountSetup.this, "Data doesn't Exists", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                else
+                {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(AccountSetup.this, "Firestore Retrieval ERROR: "+error, Toast.LENGTH_SHORT).show();
+                }
+
+                Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+                Acc_Settings_Btn.setEnabled(true);
+
+            }
+        });
+
         Acc_Settings_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 final String user_name = Acc_Settings_Name.getText().toString();
+                Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
 
-                if(!TextUtils.isEmpty(user_name) && mainImageURI != null)
+                if(isChanged)
                 {
-                    //Upload Image in firebase
 
-                     user_ID = firebaseAuth.getCurrentUser().getUid();
+                    if (!TextUtils.isEmpty(user_name) && mainImageURI != null) {
+                        //Upload Image in firebase
 
-                    Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
+                        user_ID = firebaseAuth.getCurrentUser().getUid();
 
-                    StorageReference image_path = storageReference.child("Profile_Images").child(user_ID+".jpg");
 
-                    image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-                        {
 
-                            if(task.isSuccessful())
-                            {
-                                Uri download_uri = task.getResult().getDownloadUrl();
+                        StorageReference image_path = storageReference.child("Profile_Images").child(user_ID + ".jpg");
 
-                                Map<String, String> userMap = new HashMap<>();
-                                userMap.put("name",user_name);
-                                userMap.put("image",download_uri.toString());
+                        image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
-                                //FIRESTORE UPLOAD
+                                if (task.isSuccessful()) {
+                                    storeFirestore(task, user_name);
 
-                                firebaseFirestore.collection("Users").document(user_ID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task)
-                                    {
-                                        if(task.isSuccessful())
-                                        {
-                                            Toast.makeText(AccountSetup.this, "The user settings are updated", Toast.LENGTH_SHORT).show();
-                                            Intent Activities_Feed_Intent = new Intent(AccountSetup.this, ActivitiesFeed.class);
-                                            startActivity(Activities_Feed_Intent);
-                                            finish();
+                                } else {
+                                    String error = task.getException().getMessage();
+                                    Toast.makeText(AccountSetup.this, "Image Error :" + error, Toast.LENGTH_SHORT).show();
 
-                                        }
-                                        else
-                                        {
-                                            String error = task.getException().getMessage();
-                                            Toast.makeText(AccountSetup.this, "Firestore ERROR: "+error, Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                                // Toast.makeText(AccountSetup.this, "The image is uploaded", Toast.LENGTH_SHORT).show();
-                                Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+                                    Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+                                }
+
+
                             }
-                            else
-                            {
-                                String error = task.getException().getMessage();
-                                Toast.makeText(AccountSetup.this, "Image Error :"+ error, Toast.LENGTH_SHORT).show();
-
-                                Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
-                            }
-
-
-
-
-                        }
-                    });
+                        });
+                    }
+                }
+                else
+                {
+                    storeFirestore(null, user_name);
                 }
 
             }
@@ -173,6 +201,50 @@ public class AccountSetup extends AppCompatActivity {
         });
     }
 
+    private void storeFirestore(Task<UploadTask.TaskSnapshot> task, String user_name)
+    {
+        Uri download_uri;
+
+        if(task != null)
+        {
+            download_uri = task.getResult().getDownloadUrl();
+        }
+        else
+        {
+            download_uri  = mainImageURI;
+        }
+
+
+
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("name",user_name);
+        userMap.put("image",download_uri.toString());
+
+        //FIRESTORE UPLOAD
+
+        firebaseFirestore.collection("Users").document(user_ID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                if(task.isSuccessful())
+                {
+                    Toast.makeText(AccountSetup.this, "The user settings are updated", Toast.LENGTH_SHORT).show();
+                    Intent Activities_Feed_Intent = new Intent(AccountSetup.this, ActivitiesFeed.class);
+                    startActivity(Activities_Feed_Intent);
+                    finish();
+
+                }
+                else
+                {
+                    String error = task.getException().getMessage();
+                    Toast.makeText(AccountSetup.this, "Firestore ERROR: "+error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        // Toast.makeText(AccountSetup.this, "The image is uploaded", Toast.LENGTH_SHORT).show();
+        Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+    }
+
     private void BringImagePicker()
     {
         CropImage.activity()
@@ -194,6 +266,8 @@ public class AccountSetup extends AppCompatActivity {
             {
                  mainImageURI = result.getUri();
                  setUpIamge.setImageURI(mainImageURI);
+
+                 isChanged = true;
             }
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE)
             {
