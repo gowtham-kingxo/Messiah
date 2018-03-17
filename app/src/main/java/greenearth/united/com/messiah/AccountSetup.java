@@ -54,6 +54,8 @@ public class AccountSetup extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private boolean isChanged = false;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,43 +131,48 @@ public class AccountSetup extends AppCompatActivity {
             public void onClick(View view) {
 
                 final String user_name = Acc_Settings_Name.getText().toString();
-                Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
 
-                if(isChanged)
+                if (!TextUtils.isEmpty(user_name) && mainImageURI != null)
                 {
+                    Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
 
-                    if (!TextUtils.isEmpty(user_name) && mainImageURI != null) {
-                        //Upload Image in firebase
-
-                        user_ID = firebaseAuth.getCurrentUser().getUid();
-
+                    if(isChanged)
+                    {
 
 
-                        StorageReference image_path = storageReference.child("Profile_Images").child(user_ID + ".jpg");
+                            //Upload Image in firebase
 
-                        image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            user_ID = firebaseAuth.getCurrentUser().getUid();
 
-                                if (task.isSuccessful()) {
-                                    storeFirestore(task, user_name);
 
-                                } else {
-                                    String error = task.getException().getMessage();
-                                    Toast.makeText(AccountSetup.this, "Image Error :" + error, Toast.LENGTH_SHORT).show();
 
-                                    Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+                            StorageReference image_path = storageReference.child("Profile_Images").child(user_ID + ".jpg");
+
+                            image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                                    if (task.isSuccessful()) {
+                                        storeFirestore(task, user_name);
+
+                                    } else {
+                                        String error = task.getException().getMessage();
+                                        Toast.makeText(AccountSetup.this, "Image Error :" + error, Toast.LENGTH_SHORT).show();
+
+                                        Acc_Settings_ProgressBar.setVisibility(View.INVISIBLE);
+                                    }
+
+
                                 }
+                            });
+                        }
+                        else
+                        {
+                            storeFirestore(null, user_name);
+                        }
+                }
 
 
-                            }
-                        });
-                    }
-                }
-                else
-                {
-                    storeFirestore(null, user_name);
-                }
 
             }
         });

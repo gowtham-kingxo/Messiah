@@ -2,9 +2,8 @@ package greenearth.united.com.messiah;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,12 +12,69 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ActivitiesFeed extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+
+    private String Current_user_ID ="";
+
+
+//onStart for sending users without Name and Profile pic to the Account Setup
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(currentUser == null)
+        {
+            sendToLogin();
+        }
+        else
+        {
+            Current_user_ID = mAuth.getCurrentUser().getUid();
+
+            firebaseFirestore.collection("Users").document(Current_user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                {
+                    if(task.isSuccessful())
+                    {
+                        if(!task.getResult().exists())
+                        {
+                            Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    }
+                    else
+                    {
+                        String error = task.getException().getMessage();
+                        Toast.makeText(ActivitiesFeed.this, "Firestore Retrieval ERROR: "+error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    private void sendToLogin() {
+
+        Intent i = new Intent(ActivitiesFeed.this, SignInPage.class);
+        startActivity(i);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +83,20 @@ public class ActivitiesFeed extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Toast.makeText(ActivitiesFeed.this, "Floating button clicked!!", Toast.LENGTH_SHORT).show();
+
+                Intent i = new Intent(ActivitiesFeed.this, Post_Volunteership.class);
+                startActivity(i);
+                finish();
+              /*  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();  */
             }
         });
 
