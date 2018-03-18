@@ -3,8 +3,11 @@ package greenearth.united.com.messiah;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +32,13 @@ public class ActivitiesFeed extends AppCompatActivity
     private FirebaseFirestore firebaseFirestore;
 
     private String Current_user_ID ="";
+
+    private BottomNavigationView mainbottomNav;
+
+    private HomeFragment homeFragment;
+    private NotificationFragment notificationFragment;
+    private ProblemsFeedFragment problemsFeedFragment;
+    private AccountFragment accountFragment;
 
 
 //onStart for sending users without Name and Profile pic to the Account Setup
@@ -82,6 +92,52 @@ public class ActivitiesFeed extends AppCompatActivity
         setContentView(R.layout.activity_activities_feed);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mainbottomNav = findViewById(R.id.mainBottomNav);
+
+        //fragments
+
+        homeFragment = new HomeFragment();
+        notificationFragment = new NotificationFragment();
+        problemsFeedFragment = new ProblemsFeedFragment();
+        accountFragment = new AccountFragment();
+
+        mainbottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch(item.getItemId())
+                {
+                    case R.id.bottom_action_home:
+                    {
+                        replaceFragment(homeFragment);
+                        return true;
+                    }
+
+                    case R.id.bottom_action_notif:
+                    {
+                        replaceFragment(notificationFragment);
+                        return true;
+                    }
+
+                    case R.id.bottom_action_probActivities:
+                    {
+                        replaceFragment(problemsFeedFragment);
+                        return true;
+                    }
+
+                    case R.id.bottom_action_account:
+                    {
+                        replaceFragment(accountFragment);
+                        return true;
+                    }
+
+                    default:
+                        return false;
+                }
+
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -181,5 +237,15 @@ public class ActivitiesFeed extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment)
+    {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        fragmentTransaction.replace(R.id.main_container, fragment);
+
+        fragmentTransaction.commit();
+
     }
 }

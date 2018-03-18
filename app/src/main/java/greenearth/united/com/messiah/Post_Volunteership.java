@@ -1,6 +1,7 @@
 package greenearth.united.com.messiah;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,13 +29,18 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
+
+import id.zelory.compressor.Compressor;
 
 public class Post_Volunteership extends AppCompatActivity {
 
-    private static final int MAX_LENGTH = 100;
+
     private Toolbar newPostToolBar;
 
     private ImageView newPostImage;
@@ -46,6 +54,8 @@ public class Post_Volunteership extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     private String current_user_id = "";
+
+    private Bitmap compressedImageFile;
 
 
 
@@ -99,27 +109,56 @@ public class Post_Volunteership extends AppCompatActivity {
                     {
                         newpostProgress.setVisibility(View.VISIBLE);
 
-                        String randomName = random();
+                        final String randomName = UUID.randomUUID().toString();
                         StorageReference filePath = storageReference.child("post_images").child(randomName+".jpg");
 
                         filePath.putFile(postImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+                            public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task)
                             {
+                                final String downloadUri = task.getResult().getDownloadUrl().toString();
+
                                 if(task.isSuccessful())
                                 {
-                                        String downloadUri = task.getResult().getDownloadUrl().toString();
+                                    // Image Compression
 
-                                    Map<String, Object> postMap = new HashMap<>();
-                                    postMap.put("image_url", downloadUri);
-                                    postMap.put("desc",desc);
-                                    postMap.put("user_id", current_user_id);
-                                    postMap.put("timestamp",FieldValue.serverTimestamp());
+                                    File newImageFile = new File(postImageUri.getPath());
 
-                                        firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task)
-                                            {
+                                    try {
+                                        compressedImageFile   = new Compressor(Post_Volunteership.this)
+                                                .setMaxHeight(200)
+                                                .setMaxWidth(200)
+                                                .setQuality(10)
+                                                .compressToBitmap(newImageFile);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                    byte[] thumbData =baos.toByteArray();
+
+
+                                    UploadTask uploadTask = storageReference.child("post_images/thumbs").child(randomName+".jpg").putBytes(thumbData);
+
+                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                                    {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                                        {
+                                            String downloadthumbUrl = taskSnapshot.getDownloadUrl().toString();
+
+                                            Map<String, Object> postMap = new HashMap<>();
+                                            postMap.put("image_url", downloadUri);
+                                            postMap.put("thumb",downloadthumbUrl);
+                                            postMap.put("desc",desc);
+                                            postMap.put("user_id", current_user_id);
+                                            postMap.put("timestamp", FieldValue.serverTimestamp());
+
+                                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentReference> task)
+                                                {
                                                     if(task.isSuccessful())
                                                     {
                                                         Toast.makeText(Post_Volunteership.this, "Post was added", Toast.LENGTH_SHORT).show();
@@ -135,8 +174,21 @@ public class Post_Volunteership extends AppCompatActivity {
 
                                                     newpostProgress.setVisibility(View.INVISIBLE);
 
-                                            }
-                                        });
+                                                }
+                                            });
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener()
+                                    {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+
+                                        }
+                                    });
+
+
+
+
                                 }
                                 else
                                 {
@@ -176,15 +228,5 @@ public class Post_Volunteership extends AppCompatActivity {
         }
     }
 
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++){
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
-        }
-        return randomStringBuilder.toString();
-    }
+
 }
