@@ -150,7 +150,7 @@ public class Post_Volunteership extends AppCompatActivity {
 
                                             Map<String, Object> postMap = new HashMap<>();
                                             postMap.put("image_url", downloadUri);
-                                            postMap.put("thumb",downloadthumbUrl);
+                                            postMap.put("image_thumb",downloadthumbUrl);
                                             postMap.put("desc",desc);
                                             postMap.put("user_id", current_user_id);
                                             postMap.put("timestamp", FieldValue.serverTimestamp());
