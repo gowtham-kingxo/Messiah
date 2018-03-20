@@ -102,6 +102,8 @@ public class ActivitiesFeed extends AppCompatActivity
         problemsFeedFragment = new ProblemsFeedFragment();
         accountFragment = new AccountFragment();
 
+        replaceFragment(homeFragment);
+
         mainbottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
