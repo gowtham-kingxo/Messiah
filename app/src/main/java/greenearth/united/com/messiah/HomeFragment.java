@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +29,8 @@ public class HomeFragment extends Fragment {
 
     private VolunteerRecyclerAdaptor volunteerRecyclerAdaptor;
 
+    private FirebaseAuth mAuth;
+
 
 
     public HomeFragment() {
@@ -41,6 +44,8 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        mAuth = FirebaseAuth.getInstance();
+
         volunteership_list = new ArrayList<>();
         volunteershp_list_view = view.findViewById(R.id.volunteership_list_view);
 
@@ -52,27 +57,37 @@ public class HomeFragment extends Fragment {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        firebaseFirestore.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e)
-            {
-                for(DocumentChange doc: documentSnapshots.getDocumentChanges())
-                {
-                    if(doc.getType() == DocumentChange.Type.ADDED)
+
+
+            firebaseFirestore.collection("Posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    if (mAuth.getCurrentUser() != null)
                     {
-                        VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class);
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges())
+                        {
 
-                        volunteership_list.add(volunteerPost);
+                            if (mAuth.getCurrentUser() != null)
+                            {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class);
 
-                        volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                    volunteership_list.add(volunteerPost);
+
+                                    volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                }
+                            }
+                        }
                     }
                 }
-            }
-        });
+            });
 
 
-        // Inflate the layout for this fragment
-        return view;
+
+            // Inflate the layout for this fragment
+            return view;
+
     }
 
 

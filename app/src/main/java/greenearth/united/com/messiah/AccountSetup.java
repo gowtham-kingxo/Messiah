@@ -87,7 +87,8 @@ public class AccountSetup extends AppCompatActivity {
 
         user_ID = firebaseAuth.getCurrentUser().getUid();
 
-        firebaseFirestore.collection("Users").document(user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Users").document(user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+        {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task)
             {

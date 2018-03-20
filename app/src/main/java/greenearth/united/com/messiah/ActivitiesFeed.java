@@ -40,6 +40,8 @@ public class ActivitiesFeed extends AppCompatActivity
     private ProblemsFeedFragment problemsFeedFragment;
     private AccountFragment accountFragment;
 
+    public int flag = 0;
+
 
 //onStart for sending users without Name and Profile pic to the Account Setup
     @Override
@@ -93,70 +95,72 @@ public class ActivitiesFeed extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mainbottomNav = findViewById(R.id.mainBottomNav);
-
-        //fragments
-
-        homeFragment = new HomeFragment();
-        notificationFragment = new NotificationFragment();
-        problemsFeedFragment = new ProblemsFeedFragment();
-        accountFragment = new AccountFragment();
-
-        replaceFragment(homeFragment);
-
-        mainbottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                switch(item.getItemId())
-                {
-                    case R.id.bottom_action_home:
-                    {
-                        replaceFragment(homeFragment);
-                        return true;
-                    }
-
-                    case R.id.bottom_action_notif:
-                    {
-                        replaceFragment(notificationFragment);
-                        return true;
-                    }
-
-                    case R.id.bottom_action_probActivities:
-                    {
-                        replaceFragment(problemsFeedFragment);
-                        return true;
-                    }
-
-                    case R.id.bottom_action_account:
-                    {
-                        replaceFragment(accountFragment);
-                        return true;
-                    }
-
-                    default:
-                        return false;
-                }
-
-            }
-        });
-
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(ActivitiesFeed.this, "Floating button clicked!!", Toast.LENGTH_SHORT).show();
+        if(mAuth.getCurrentUser() != null) {
 
-                Intent i = new Intent(ActivitiesFeed.this, Post_Volunteership.class);
-                startActivity(i);
-                finish();
-              /*  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();  */
-            }
-        });
+
+            mainbottomNav = findViewById(R.id.mainBottomNav);
+
+            //fragments
+
+            homeFragment = new HomeFragment();
+            notificationFragment = new NotificationFragment();
+            problemsFeedFragment = new ProblemsFeedFragment();
+            accountFragment = new AccountFragment();
+
+            replaceFragment(homeFragment);
+
+            mainbottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                    switch (item.getItemId()) {
+                        case R.id.bottom_action_home: {
+                            replaceFragment(homeFragment);
+                            return true;
+                        }
+
+                        case R.id.bottom_action_notif: {
+                            replaceFragment(notificationFragment);
+                            return true;
+                        }
+
+                        case R.id.bottom_action_probActivities: {
+                            replaceFragment(problemsFeedFragment);
+                            return true;
+                        }
+
+                        case R.id.bottom_action_account: {
+                            replaceFragment(accountFragment);
+                            return true;
+                        }
+
+                        default:
+                            return false;
+                    }
+
+                }
+            });
+
+
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // Toast.makeText(ActivitiesFeed.this, "Floating button clicked!!", Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(ActivitiesFeed.this, Post_Volunteership.class);
+                    startActivity(i);
+
+                      /*  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();  */
+                }
+            });
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -197,16 +201,7 @@ public class ActivitiesFeed extends AppCompatActivity
 
             //Setting onClick
 
-            Toast.makeText(this, "Hi Log out clicked", Toast.LENGTH_SHORT).show();
-            FirebaseAuth.getInstance().signOut();
-
-            Toast.makeText(this, "Successfully logged out", Toast.LENGTH_SHORT).show();
-
-            Intent i = new Intent(ActivitiesFeed
-                    .this, SignInPage.class);
-            startActivity(i);
-            finish();
-            return true;
+           Logout();
         }
 
         return super.onOptionsItemSelected(item);
@@ -250,4 +245,26 @@ public class ActivitiesFeed extends AppCompatActivity
         fragmentTransaction.commit();
 
     }
+
+    private boolean  Logout() {
+
+        flag = 1;
+
+        if(mAuth.getCurrentUser() != null) {
+
+            Toast.makeText(this, "Hi Log out clicked", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+
+            Toast.makeText(this, "Successfully logged out", Toast.LENGTH_SHORT).show();
+
+            Intent i = new Intent(ActivitiesFeed
+                    .this, SignInPage.class);
+            startActivity(i);
+            finish();
+            return true;
+        }
+        return true;
+    }
+
+
 }
