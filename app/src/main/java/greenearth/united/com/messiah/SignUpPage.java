@@ -120,7 +120,7 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
 
         Toast.makeText(this, "You are logged in", Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(SignUpPage.this, AccountSetup.class);
+        Intent i = new Intent(SignUpPage.this, ActivitiesFeed.class);
         startActivity(i);
         finish();
 

@@ -215,6 +215,9 @@ public class ActivitiesFeed extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
+            startActivity(i);
+
         } else if (id == R.id.nav_gallery) {
 
             Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
