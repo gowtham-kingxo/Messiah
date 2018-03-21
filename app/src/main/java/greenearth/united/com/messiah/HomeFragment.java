@@ -36,6 +36,8 @@ public class HomeFragment extends Fragment {
 
     private DocumentSnapshot lastVisible;
 
+    //private Boolean isFirstPageFirstLoad = true;
+
 
 
     public HomeFragment() {
@@ -83,13 +85,16 @@ public class HomeFragment extends Fragment {
                 .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
 
 
-            firstQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     if (mAuth.getCurrentUser() != null)
                     {
-                        lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size()-1);
+//                        if(isFirstPageFirstLoad)
+//                        {
+                            lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+//                        }
 
                         for (DocumentChange doc : documentSnapshots.getDocumentChanges())
                         {
@@ -99,12 +104,21 @@ public class HomeFragment extends Fragment {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
                                     VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class);
 
-                                    volunteership_list.add(volunteerPost);
+//                                    if(isFirstPageFirstLoad)
+//                                    {
+                                     volunteership_list.add(volunteerPost);
+//                                    }
+//                                    else
+//                                    {
+//                                        volunteership_list.add(0, volunteerPost);
+//                                    }
 
                                     volunteerRecyclerAdaptor.notifyDataSetChanged();
                                 }
                             }
                         }
+
+                        //isFirstPageFirstLoad = false;
                     }
                 }
             });
@@ -124,7 +138,7 @@ public class HomeFragment extends Fragment {
                 .limit(3);
 
 
-        nextQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
