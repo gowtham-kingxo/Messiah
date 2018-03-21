@@ -14,11 +14,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,6 +36,10 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
     public  List<VolunteerPost> volunteership_list;
     public Context context;
+
+    private FirebaseAuth mAuth;
+
+
 
     public VolunteerRecyclerAdaptor(List<VolunteerPost> volunteership_list)
     {
@@ -48,6 +56,8 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        mAuth = FirebaseAuth.getInstance();
+
         return new ViewHolder(view);
     }
 
@@ -61,6 +71,11 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         String thumbUri = volunteership_list.get(position).getImage_thumb();
         holder.setVolunteershipImage(image_url, thumbUri);
 
+        final String postId = volunteership_list.get(position).postID;
+
+        final String currentUserId = mAuth.getCurrentUser().getUid();
+
+
         String user_id  = volunteership_list.get(position).getUser_id();
         holder.setUserImageandUsername(user_id);
 
@@ -68,6 +83,26 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
 
         holder.setTime(dateString);
+
+        //Likes feature
+
+
+        holder.postLikeImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                Map<String, Object> likesMap = new HashMap<>();
+                likesMap.put("timestamp", FieldValue.serverTimestamp());
+
+               // firebaseFirestore.collection("Posts").document(postId).collection("Likes") -> instead
+                firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).set(likesMap);
+
+
+
+            }
+        });
 
 
     }
@@ -89,10 +124,16 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
         private TextView postDate;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
+        private ImageView postLikeImage;
+        private TextView postLikeCount;
 
+        public ViewHolder(View itemView)
+        {
+
+            super(itemView);
             mView = itemView;
+
+            postLikeImage = mView.findViewById(R.id.postLikeImage);
         }
 
         public void setDescText(String descText)

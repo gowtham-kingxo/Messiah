@@ -101,8 +101,10 @@ public class HomeFragment extends Fragment {
 
                             if (mAuth.getCurrentUser() != null)
                             {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class);
+                                if (doc.getType() == DocumentChange.Type.ADDED)
+                                {
+                                    String postID = doc.getDocument().getId();
+                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class).withId(postID);
 
 //                                    if(isFirstPageFirstLoad)
 //                                    {
@@ -155,7 +157,8 @@ public class HomeFragment extends Fragment {
                             if (mAuth.getCurrentUser() != null) {
                                 if (doc.getType() == DocumentChange.Type.ADDED)
                                 {
-                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class);
+                                    String postID = doc.getDocument().getId();
+                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class).withId(postID);
 
                                     volunteership_list.add(volunteerPost);
 

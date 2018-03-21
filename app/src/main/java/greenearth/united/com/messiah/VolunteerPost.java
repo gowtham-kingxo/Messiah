@@ -6,7 +6,7 @@ import java.util.Date;
  * Created by gowtham g on 19-03-2018.
  */
 
-public class VolunteerPost {
+public class VolunteerPost extends postID{
 
     public String user_id, image_url, desc, image_thumb;
     public Date timestamp;
