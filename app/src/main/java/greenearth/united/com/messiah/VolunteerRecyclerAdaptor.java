@@ -1,7 +1,9 @@
 package greenearth.united.com.messiah;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +18,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -62,8 +67,11 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position)
     {
+        holder.setIsRecyclable(false);
+
+
         String desc_data = volunteership_list.get(position).getDesc();
         holder.setDescText(desc_data);
 
@@ -84,20 +92,80 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
         holder.setTime(dateString);
 
+        //Get likes count
+        firebaseFirestore.collection("Posts/" + postId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e)
+            {
+                if(! documentSnapshots.isEmpty())
+                {
+                    //it finds how many likes are present
+
+                    int count = documentSnapshots.size();
+
+                    holder.updateLikesCount(count);
+
+                }
+                else
+                {
+                    holder.updateLikesCount(0);
+                }
+
+            }
+        });
+
+
+        //Get likes
+        firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>()
+        {
+            //below is added since getDrawable requires minSDK 21
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e)
+            {
+                if(documentSnapshot.exists())
+                {
+                    holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.clapped));
+                }
+                else
+                {
+                    holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.claps));
+                }
+            }
+        });
+
+
         //Likes feature
-
-
         holder.postLikeImage.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
+                firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                    {
+                        if(!task.getResult().exists())
+                        {
+                            Map<String, Object> likesMap = new HashMap<>();
+                            likesMap.put("timestamp", FieldValue.serverTimestamp());
 
-                Map<String, Object> likesMap = new HashMap<>();
-                likesMap.put("timestamp", FieldValue.serverTimestamp());
+                            // firebaseFirestore.collection("Posts").document(postId).collection("Likes") -> instead
+                            firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).set(likesMap);
+                        }
+                        else
+                        {
+                            firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).delete();
 
-               // firebaseFirestore.collection("Posts").document(postId).collection("Likes") -> instead
-                firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).set(likesMap);
+                        }
+
+                    }
+                });
+
+
+
 
 
 
@@ -206,6 +274,23 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
             postDate = mView.findViewById(R.id.postDate);
             postDate.setText(date);
 
+        }
+
+        public void updateLikesCount(int count)
+        {
+            String likeString ="";
+            if(count>0)
+            {
+                likeString = " likes";
+            }
+            else
+            {
+                likeString = " like";
+            }
+
+
+            postLikeCount = mView.findViewById(R.id.postLikeCount);
+            postLikeCount.setText(""+ count + likeString);
         }
     }
 

@@ -38,6 +38,27 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser != null)
+            updateUI();
+    }
+
+    private void updateUI() {
+
+       // Toast.makeText(this, "You are logged in", Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(SignInPage.this, ActivitiesFeed.class);
+        startActivity(i);
+        finish();
+
+    }
+
+
+    @Override
     public void onClick(View view)
     {
 
