@@ -162,7 +162,7 @@ public class Post_Volunteership extends AppCompatActivity {
                                                 {
                                                     if(task.isSuccessful())
                                                     {
-                                                        Toast.makeText(Post_Volunteership.this, "Post was added", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(Post_Volunteership.this, "Normal Post was added", Toast.LENGTH_SHORT).show();
                                                         Intent i = new Intent(Post_Volunteership.this, ActivitiesFeed.class);
                                                         startActivity(i);
                                                         finish();
@@ -178,14 +178,15 @@ public class Post_Volunteership extends AppCompatActivity {
                                                 }
                                             });
 
-                                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
+
+                                            firebaseFirestore.collection("Users/"+current_user_id+"/MyPosts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
                                             {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentReference> task)
                                                 {
                                                     if(task.isSuccessful())
                                                     {
-                                                        Toast.makeText(Post_Volunteership.this, "Post was added", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(Post_Volunteership.this, "My Post was added", Toast.LENGTH_SHORT).show();
                                                         Intent i = new Intent(Post_Volunteership.this, ActivitiesFeed.class);
                                                         startActivity(i);
                                                         finish();
