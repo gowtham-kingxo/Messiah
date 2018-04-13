@@ -18,11 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ActivitiesFeed extends AppCompatActivity
@@ -56,28 +53,28 @@ public class ActivitiesFeed extends AppCompatActivity
         }
         else
         {
-            Current_user_ID = mAuth.getCurrentUser().getUid();
-
-            firebaseFirestore.collection("Users").document(Current_user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task)
-                {
-                    if(task.isSuccessful())
-                    {
-                        if(!task.getResult().exists())
-                        {
-                            Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
-                            startActivity(i);
-                            finish();
-                        }
-                    }
-                    else
-                    {
-                        String error = task.getException().getMessage();
-                        Toast.makeText(ActivitiesFeed.this, "Firestore Retrieval ERROR: "+error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+//            Current_user_ID = mAuth.getCurrentUser().getUid();
+//
+//            firebaseFirestore.collection("Users").document(Current_user_ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task)
+//                {
+//                    if(task.isSuccessful())
+//                    {
+//                        if(!task.getResult().exists())
+//                        {
+//                            Intent i = new Intent(ActivitiesFeed.this, AccountSetup.class);
+//                            startActivity(i);
+//                            finish();
+//                        }
+//                    }
+//                    else
+//                    {
+//                        String error = task.getException().getMessage();
+//                        Toast.makeText(ActivitiesFeed.this, "Firestore Retrieval ERROR: "+error, Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
         }
     }
 

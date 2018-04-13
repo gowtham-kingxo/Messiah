@@ -39,10 +39,10 @@
         android:textColor="@color/cardview_light_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Acc_Settings_Name" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <EditText
-        android:id="@+id/Acc_Settings_Name"
+        android:id="@+id/username"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -80,6 +80,6 @@
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Acc_Settings_Name" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
 </android.support.constraint.ConstraintLayout>

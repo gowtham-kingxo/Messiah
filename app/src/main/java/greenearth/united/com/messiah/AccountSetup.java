@@ -67,7 +67,7 @@ public class AccountSetup extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        Acc_Settings_Name = findViewById(R.id.Acc_Settings_Name);
+        Acc_Settings_Name = findViewById(R.id.username);
         Acc_Settings_Btn = findViewById(R.id.AccountSettingButton);
 
         Acc_Settings_ProgressBar = findViewById(R.id.Acc_Settings_ProgressBar);
@@ -99,7 +99,11 @@ public class AccountSetup extends AppCompatActivity {
                        String name = task.getResult().getString("name");
                        String image = task.getResult().getString("image");
 
-                       mainImageURI = Uri.parse(image);
+                        Toast.makeText(AccountSetup.this, image, Toast.LENGTH_SHORT).show();
+
+                        if(image != null) {
+                            mainImageURI = Uri.parse(image);
+                        }
 
                         RequestOptions placeholderrequest = new RequestOptions();
                         placeholderrequest.placeholder(R.drawable.defaultprofilepic);

@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.lang.NullPointerException;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -86,54 +88,79 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
         String user_id  = volunteership_list.get(position).getUser_id();
         holder.setUserImageandUsername(user_id);
+        try {
+            long millisecond = volunteership_list.get(position).getTimestamp().getTime();
+            String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
+            holder.setTime(dateString);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(context, "Date Exception", Toast.LENGTH_SHORT).show();
+        }
 
-        long millisecond = volunteership_list.get(position).getTimestamp().getTime();
-        String dateString = android.text.format.DateFormat.format("dd/MM/yyyy", new Date(millisecond)).toString();
 
-        holder.setTime(dateString);
+
+
+//         firebaseFirestore.collection("Posts/").document(postId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//             @Override
+//             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//
+//                 if(task.isSuccessful())
+//                 {
+//                     if(task.getResult().exists())
+//                     {
+//
+//                     }
+//                 }
+//
+//             }
+//         });
 
         //Get likes count
-        firebaseFirestore.collection("Posts/" + postId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>()
+
+        try {
+
+
+            firebaseFirestore.collection("Posts/" + postId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    if (!documentSnapshots.isEmpty()) {
+                        //it finds how many likes are present
+
+                        int count = documentSnapshots.size();
+
+                        holder.updateLikesCount(count);
+
+                    } else {
+                        holder.updateLikesCount(0);
+                    }
+
+                }
+            });
+
+
+            //Get likes
+            firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                //below is added since getDrawable requires minSDK 21
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                    if (documentSnapshot.exists()) {
+                        holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.clapped));
+                    } else {
+                        holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.claps));
+                    }
+                }
+            });
+        }
+        catch (NullPointerException ne)
         {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e)
-            {
-                if(! documentSnapshots.isEmpty())
-                {
-                    //it finds how many likes are present
-
-                    int count = documentSnapshots.size();
-
-                    holder.updateLikesCount(count);
-
-                }
-                else
-                {
-                    holder.updateLikesCount(0);
-                }
-
-            }
-        });
-
-
-        //Get likes
-        firebaseFirestore.collection("Posts/" + postId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>()
+            Toast.makeText(context, "Like exception occurred", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e)
         {
-            //below is added since getDrawable requires minSDK 21
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e)
-            {
-                if(documentSnapshot.exists())
-                {
-                    holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.clapped));
-                }
-                else
-                {
-                    holder.postLikeImage.setImageDrawable(context.getDrawable(R.drawable.claps));
-                }
-            }
-        });
+            Toast.makeText(context, "Like exception occurred", Toast.LENGTH_SHORT).show();
+        }
 
 
         //Likes feature
@@ -279,13 +306,13 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         public void updateLikesCount(int count)
         {
             String likeString ="";
-            if(count>0)
+            if(count == 1)
             {
-                likeString = " likes";
+                likeString = " like";
             }
             else
             {
-                likeString = " like";
+                likeString = " likes";
             }
 
 
