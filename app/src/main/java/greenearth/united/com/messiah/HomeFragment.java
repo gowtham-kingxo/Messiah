@@ -36,6 +36,8 @@ public class HomeFragment extends Fragment {
 
     private DocumentSnapshot lastVisible;
 
+    private String currentUserId = "";
+
     //private Boolean isFirstPageFirstLoad = true;
 
 
@@ -81,34 +83,37 @@ public class HomeFragment extends Fragment {
             }
         });
 
+       //here
         Query firstQuery = firebaseFirestore.collection("Posts")
-                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
+               .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
+        try {
+            currentUserId = mAuth.getCurrentUser().getUid();
 
+//            Query firstQuery = firebaseFirestore.collection("Posts")
+//                    .whereEqualTo("user_id", currentUserId)
+//
+//                    .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
 
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                    if (mAuth.getCurrentUser() != null)
-                    {
+                    if (mAuth.getCurrentUser() != null) {
 //                        if(isFirstPageFirstLoad)
 //                        {
-                            lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+                        lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
 //                        }
 
-                        for (DocumentChange doc : documentSnapshots.getDocumentChanges())
-                        {
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
 
-                            if (mAuth.getCurrentUser() != null)
-                            {
-                                if (doc.getType() == DocumentChange.Type.ADDED)
-                                {
+                            if (mAuth.getCurrentUser() != null) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
                                     String postID = doc.getDocument().getId();
                                     VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class).withId(postID);
 
 //                                    if(isFirstPageFirstLoad)
 //                                    {
-                                     volunteership_list.add(volunteerPost);
+                                    volunteership_list.add(volunteerPost);
 //                                    }
 //                                    else
 //                                    {
@@ -126,52 +131,71 @@ public class HomeFragment extends Fragment {
             });
 
 
-
             // Inflate the layout for this fragment
-            return view;
 
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getActivity(), "Exception", Toast.LENGTH_SHORT).show();
+        }
+        return view;
     }
 
     public void loadMorePost()
     {
+
+        //here
         Query nextQuery = firebaseFirestore.collection("Posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .startAfter(lastVisible)
                 .limit(3);
+        try {
+            currentUserId = mAuth.getCurrentUser().getUid();
 
+//            Query nextQuery = firebaseFirestore.collection("Posts")
+//                    .whereEqualTo("user_id", currentUserId)
+//                    .orderBy("timestamp", Query.Direction.DESCENDING)
+//                    .startAfter(lastVisible)
+//                    .limit(3);
 
-        nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+            nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (mAuth.getCurrentUser() != null)
-                {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
-                    if(!documentSnapshots.isEmpty())
+                    if(e != null)
                     {
-                        lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+                        return;
+                    }
+                    if (mAuth.getCurrentUser() != null) {
 
-                        for (DocumentChange doc : documentSnapshots.getDocumentChanges())
-                        {
+                        if (!documentSnapshots.isEmpty()) {
+                            lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
 
-                            if (mAuth.getCurrentUser() != null) {
-                                if (doc.getType() == DocumentChange.Type.ADDED)
-                                {
-                                    String postID = doc.getDocument().getId();
-                                    VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class).withId(postID);
+                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
 
-                                    volunteership_list.add(volunteerPost);
+                                if (mAuth.getCurrentUser() != null) {
+                                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                                        String postID = doc.getDocument().getId();
+                                        VolunteerPost volunteerPost = doc.getDocument().toObject(VolunteerPost.class).withId(postID);
 
-                                    volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                        volunteership_list.add(volunteerPost);
+
+                                        volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                    }
                                 }
                             }
                         }
-                     }
+                    }
                 }
-            }
-        });
+            });
 
 
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getActivity(), "Exception", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

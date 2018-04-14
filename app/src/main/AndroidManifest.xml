@@ -36,15 +36,21 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeScreen" />
+        <activity android:name=".HomeScreen" >
+
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
         <activity android:name=".SignInPage">
 
-                    <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
 
-                    <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
+
 
         </activity>
 
@@ -59,7 +65,10 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Post_Volunteership" android:parentActivityName=".ActivitiesFeed"></activity>
+        <activity android:name=".Post_Volunteership" android:parentActivityName=".ActivitiesFeed">
+
+
+        </activity>
     </application>
 
 </manifest>

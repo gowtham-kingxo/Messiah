@@ -21,8 +21,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -56,6 +58,13 @@ public class Post_Volunteership extends AppCompatActivity {
     private String current_user_id = "";
 
     private Bitmap compressedImageFile;
+
+    private String temp_postID ;
+
+
+
+
+
 
 
 
@@ -148,12 +157,18 @@ public class Post_Volunteership extends AppCompatActivity {
                                         {
                                             String downloadthumbUrl = taskSnapshot.getDownloadUrl().toString();
 
-                                            Map<String, Object> postMap = new HashMap<>();
+
+                                            final String temp_image_url = ""+downloadUri;
+                                            final Map<String, Object> postMap = new HashMap<>();
                                             postMap.put("image_url", downloadUri);
                                             postMap.put("image_thumb",downloadthumbUrl);
                                             postMap.put("desc",desc);
                                             postMap.put("user_id", current_user_id);
-                                            postMap.put("timestamp", FieldValue.serverTimestamp());
+                                            postMap.put("timestamp", FieldValue.serverTimestamp() );
+
+                                            final String postID = "";
+
+
 
                                             firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
                                             {
@@ -162,7 +177,52 @@ public class Post_Volunteership extends AppCompatActivity {
                                                 {
                                                     if(task.isSuccessful())
                                                     {
-                                                        Toast.makeText(Post_Volunteership.this, "Normal Post was added", Toast.LENGTH_SHORT).show();
+
+                                                        //for getting the added post id
+                                                        firebaseFirestore.collection("Posts").whereEqualTo("image_url",temp_image_url ).get()
+                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                                                        if(task.isSuccessful())
+                                                                        {
+                                                                            for (DocumentSnapshot document : task.getResult()){
+
+                                                                              // Toast.makeText(Post_Volunteership.this, ""+document.getId(), Toast.LENGTH_SHORT).show();
+
+                                                                                temp_postID = document.getId();
+
+
+
+
+                                                                                   firebaseFirestore.collection("Users").document(current_user_id).collection("MyPosts").document(temp_postID).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                   public void onSuccess(Void aVoid)
+                                                                                    {
+//
+
+
+                                                                                            }
+                                                                                   })
+                                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                                        @Override
+                                                                                        public void onFailure(@NonNull Exception e) {
+
+                                                                                            Toast.makeText(Post_Volunteership.this, "Falied same post ID", Toast.LENGTH_SHORT).show();
+                                                                                        }
+                                                                                    });
+
+                                                                                Toast.makeText(Post_Volunteership.this, "Post id :  "+temp_postID, Toast.LENGTH_LONG).show();
+                                                                            }
+                                                                        }
+
+                                                                    }
+                                                                });
+
+
+
+
+                                                      //  Toast.makeText(Post_Volunteership.this, "Normal Post was added", Toast.LENGTH_SHORT).show();
                                                         Intent i = new Intent(Post_Volunteership.this, ActivitiesFeed.class);
                                                         startActivity(i);
                                                         finish();
@@ -178,31 +238,49 @@ public class Post_Volunteership extends AppCompatActivity {
                                                 }
                                             });
 
+                                                        //here
+//                                            firebaseFirestore.collection("Users/"+current_user_id+"/MyPosts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
+//                                            {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<DocumentReference> task)
+//                                                {
+//                                                    if(task.isSuccessful())
+//                                                    {
+//                                                        Toast.makeText(Post_Volunteership.this, "My Post was added", Toast.LENGTH_SHORT).show();
+//                                                        Intent i = new Intent(Post_Volunteership.this, ActivitiesFeed.class);
+//                                                        startActivity(i);
+//                                                        finish();
+//                                                    }
+//                                                    else
+//                                                    {
+//                                                        String error = task.getException().getMessage();
+//                                                        Toast.makeText(Post_Volunteership.this, "Firestore ERROR: "+error, Toast.LENGTH_SHORT).show();
+//                                                    }
+//
+//                                                    newpostProgress.setVisibility(View.INVISIBLE);
+//
+//                                                }
+//                                            });
 
-                                            firebaseFirestore.collection("Users/"+current_user_id+"/MyPosts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
-                                            {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentReference> task)
-                                                {
-                                                    if(task.isSuccessful())
-                                                    {
-                                                        Toast.makeText(Post_Volunteership.this, "My Post was added", Toast.LENGTH_SHORT).show();
-                                                        Intent i = new Intent(Post_Volunteership.this, ActivitiesFeed.class);
-                                                        startActivity(i);
-                                                        finish();
-                                                    }
-                                                    else
-                                                    {
-                                                        String error = task.getException().getMessage();
-                                                        Toast.makeText(Post_Volunteership.this, "Firestore ERROR: "+error, Toast.LENGTH_SHORT).show();
-                                                    }
+                                            Toast.makeText(Post_Volunteership.this, "toast post-id: "+temp_postID, Toast.LENGTH_SHORT).show();
 
-                                                    newpostProgress.setVisibility(View.INVISIBLE);
-
-                                                }
-                                            });
-
-
+//                                            firebaseFirestore.collection("Users").document(current_user_id).collection("MyPosts").document(temp_postID+"66").set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void aVoid) {
+//
+//                                                   // Toast.makeText(Post_Volunteership.this, "MyPost added with the same ID", Toast.LENGTH_SHORT).show();
+//
+//                                                }
+//                                            })
+//                                                    .addOnFailureListener(new OnFailureListener() {
+//                                                        @Override
+//                                                        public void onFailure(@NonNull Exception e) {
+//
+//                                                            Toast.makeText(Post_Volunteership.this, "Falied same post ID", Toast.LENGTH_SHORT).show();
+//                                                        }
+//                                                    });
+//
+//
                                         }
                                     }).addOnFailureListener(new OnFailureListener()
                                     {
