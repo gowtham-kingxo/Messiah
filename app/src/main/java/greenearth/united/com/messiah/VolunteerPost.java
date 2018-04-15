@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class VolunteerPost extends postID{
 
-    public String user_id, image_url, desc, image_thumb;
+    public String user_id, image_url, desc, image_thumb, latitude, longitude, date, address, phone;
     public Date timestamp;
 
 
@@ -19,12 +19,18 @@ public class VolunteerPost extends postID{
     public VolunteerPost(){}
 
     //constructor
-    public VolunteerPost(String user_id, String image_url, String desc, String image_thumb, Date timestamp) {
+    public VolunteerPost(String user_id, String image_url, String desc, String image_thumb, Date timestamp,
+                         String latitude, String longitude,String date, String address, String phone) {
         this.user_id = user_id;
         this.image_url = image_url;
         this.desc = desc;
         this.image_thumb = image_thumb;
         this.timestamp = timestamp;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.date = date;
+        this.address = address;
+        this.phone = phone;
 
     }
 
@@ -44,7 +50,48 @@ public class VolunteerPost extends postID{
         return image_url;
     }
 
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public void setImage_url(String image_url) {
+
         this.image_url = image_url;
     }
 

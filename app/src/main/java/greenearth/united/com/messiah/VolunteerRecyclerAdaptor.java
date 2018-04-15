@@ -1,6 +1,8 @@
 package greenearth.united.com.messiah;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -29,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.lang.NullPointerException;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -45,6 +45,15 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
     public Context context;
 
     private FirebaseAuth mAuth;
+
+    public String lat = "";
+    public  String lng = "";
+
+    public  String phone = "";
+
+    String address  = "";
+
+    String desc_data = "";
 
 
 
@@ -74,12 +83,24 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         holder.setIsRecyclable(false);
 
 
-        String desc_data = volunteership_list.get(position).getDesc();
+        desc_data = volunteership_list.get(position).getDesc();
         holder.setDescText(desc_data);
 
         String image_url = volunteership_list.get(position).getImage_url();
         String thumbUri = volunteership_list.get(position).getImage_thumb();
         holder.setVolunteershipImage(image_url, thumbUri);
+
+
+        lat = volunteership_list.get(position).getLatitude();
+        lng = volunteership_list.get(position).getLongitude();
+
+
+        String date = volunteership_list.get(position).getDate();
+        holder.setDate(date);
+
+        phone = volunteership_list.get(position).getPhone();
+
+        address = volunteership_list.get(position).getAddress();
 
         final String postId = volunteership_list.get(position).postID;
 
@@ -121,6 +142,8 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         try {
 
 
+
+            //for like
             firebaseFirestore.collection("Posts/" + postId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -152,6 +175,42 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
                     }
                 }
             });
+
+
+            //for volunteers
+            firebaseFirestore.collection("Posts/" + postId + "/Volunteers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    if (!documentSnapshots.isEmpty()) {
+                        //it finds how many volunteers are present
+
+                        int volunteerCount = documentSnapshots.size();
+
+                        holder.updateVolunteerCount(volunteerCount);
+
+                    } else {
+                        holder.updateVolunteerCount(0);
+                    }
+
+                }
+            });
+
+
+            //Get volunteer
+            firebaseFirestore.collection("Posts/" + postId + "/Volunteers").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                //below is added since getDrawable requires minSDK 21
+                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                    if (documentSnapshot.exists()) {
+                        holder.raiseHandImage.setImageDrawable(context.getDrawable(R.drawable.hand_black_icon));
+                    } else {
+                        holder.raiseHandImage.setImageDrawable(context.getDrawable(R.drawable.hand_icon_smooth));
+                    }
+                }
+            });
+
+
         }
         catch (NullPointerException ne)
         {
@@ -162,6 +221,7 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
             Toast.makeText(context, "Like exception occurred", Toast.LENGTH_SHORT).show();
         }
 
+        //location feature
 
         //Likes feature
         holder.postLikeImage.setOnClickListener(new View.OnClickListener()
@@ -199,6 +259,69 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
             }
         });
 
+        //raise_hand - volunteer count
+        holder.raiseHandImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                firebaseFirestore.collection("Posts/" + postId + "/Volunteers").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                    {
+                        if(!task.getResult().exists())
+                        {
+                            Map<String, Object> likesMap = new HashMap<>();
+                            likesMap.put("timestamp", FieldValue.serverTimestamp());
+
+                            // firebaseFirestore.collection("Posts").document(postId).collection("Likes") -> instead
+                            firebaseFirestore.collection("Posts/" + postId + "/Volunteers").document(currentUserId).set(likesMap);
+                        }
+                        else
+                        {
+                            firebaseFirestore.collection("Posts/" + postId + "/Volunteers").document(currentUserId).delete();
+
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+
+
+
+
+        //location onClick()
+
+        holder.location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               // Toast.makeText(context, "lat: "+lat+" lng: "+lng, Toast.LENGTH_SHORT).show();
+
+                        Uri gmmIntentUri = Uri.parse("geo:"+lat+","+lng+"?q="+lat+","+lng+"("+desc_data+" "+address+")");
+
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        context.startActivity(mapIntent);
+
+            }
+        });
+
+        //phone onClick()
+
+        holder.phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel",phone, null));
+                context.startActivity(intent);
+
+            }
+        });
+
 
     }
 
@@ -220,7 +343,18 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
         private TextView postDate;
 
         private ImageView postLikeImage;
+
+        private ImageView raiseHandImage;
+
         private TextView postLikeCount;
+
+        private TextView postVolunteerCount;
+
+        private TextView DateTextView;
+
+        private ImageView location;
+
+        private ImageView phone;
 
         public ViewHolder(View itemView)
         {
@@ -229,7 +363,16 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
             mView = itemView;
 
             postLikeImage = mView.findViewById(R.id.postLikeImage);
+
+            raiseHandImage = mView.findViewById(R.id.raise_hand_image_view);
+
+            location = mView.findViewById(R.id.location_image_view);
+
+            phone = mView.findViewById(R.id.phone_Image_View);
         }
+
+        //location
+
 
         public void setDescText(String descText)
         {
@@ -310,6 +453,21 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
             postLikeCount = mView.findViewById(R.id.postLikeCount);
             postLikeCount.setText(""+ count );
+        }
+
+        public void updateVolunteerCount(int volunteerCount)
+        {
+
+            postVolunteerCount = mView.findViewById(R.id.volunteer_count_TV);
+            postVolunteerCount.setText(""+ volunteerCount );
+        }
+
+        public  void setDate(String date)
+        {
+
+            DateTextView = mView.findViewById(R.id.DateTextView);
+            DateTextView.setText(date);
+
         }
     }
 
