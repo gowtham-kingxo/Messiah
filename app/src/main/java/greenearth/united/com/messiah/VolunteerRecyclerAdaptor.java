@@ -308,11 +308,11 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
             String likeString ="";
             if(count == 1)
             {
-                likeString = " like";
+                likeString = " applause";
             }
             else
             {
-                likeString = " likes";
+                likeString = " applauses";
             }
 
 

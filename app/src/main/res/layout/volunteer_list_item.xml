@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/postLikeImage"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
@@ -90,15 +90,83 @@
 
             <TextView
                 android:id="@+id/postLikeCount"
-                android:layout_width="45dp"
+                android:layout_width="60dp"
                 android:layout_height="23dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="likes"
+                android:text="applauses"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/postLikeImage"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription" />
+
+            <TextView
+                android:id="@+id/DateTextView"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toTopOf="@+id/postImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.752"
+                app:layout_constraintStart_toEndOf="@+id/postUserName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.421" />
+
+            <ImageView
+                android:id="@+id/raise_hand_image_view"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/postLikeCount"
+                app:layout_constraintTop_toBottomOf="@+id/postDescription"
+                app:srcCompat="@drawable/hand_icon_smooth" />
+
+
+            <TextView
+                android:id="@+id/support_count_TV"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="volunteers"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/raise_hand_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/postDescription" />
+
+            <ImageView
+                android:id="@+id/location_image_view"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/support_count_TV"
+                app:layout_constraintTop_toBottomOf="@+id/postDescription"
+                app:layout_constraintVertical_bias="0.6"
+                app:srcCompat="@drawable/location_black_icon" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/location_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/postDescription"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/telephone_black_icon" />
 
         </android.support.constraint.ConstraintLayout>
 

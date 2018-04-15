@@ -13,8 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,6 +69,17 @@ public class Post_Volunteership extends AppCompatActivity {
     private String temp_postID ;
 
 
+    //for places API
+    Double lat;
+    Double lng;
+    String address = "";
+
+    String phone ="";
+
+    EditText Phone_number_ET;
+    TextView Address_bar_TV;
+
+
 
 
 
@@ -92,6 +110,11 @@ public class Post_Volunteership extends AppCompatActivity {
         newPostDesc = findViewById(R.id.new_post_desc);
         newPostBtn = findViewById(R.id.new_post_btn);
         newpostProgress = findViewById(R.id.new_post_progress);
+
+        //places fields
+        Address_bar_TV = findViewById(R.id.Address_bar_TV);
+        Phone_number_ET = findViewById(R.id.Phone_number_ET);
+
         //to upload image from mobile
         newPostImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +128,64 @@ public class Post_Volunteership extends AppCompatActivity {
 
             }
         });
+
+
+        //Google Places
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setBoundsBias(new LatLngBounds(
+                new LatLng(13.067439, 80.237617),
+                new LatLng(13.067439, 80.237617)));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                                                            @Override
+                                                            public void onPlaceSelected(Place place) {
+                                                                // TODO: Get info about the selected place.
+
+
+                                                                String s = String.valueOf(place.getAddress());
+
+                                                                address = (String) place.getName();
+
+                                                                Address_bar_TV.setText(address);
+
+
+
+                                                                String latlng = String.valueOf(place.getLatLng());
+
+                                                                Toast.makeText(Post_Volunteership.this, "Address: "+s, Toast.LENGTH_SHORT).show();
+
+
+                                                                int index1,index2;
+
+                                                                index1 = latlng.indexOf("(");
+                                                                index2 = latlng.indexOf(",");
+
+                                                               // location_update = 1;
+
+
+
+                                                                lat = Double.parseDouble(latlng.substring(index1+1,index2));
+
+                                                                index1 = index2+1;
+                                                                index2 = latlng.indexOf(")");
+
+                                                               lng = Double.parseDouble(latlng.substring(index1, index2));
+
+                                                                Toast.makeText(Post_Volunteership.this, "Lat: "+lat+" Lng: "+lng, Toast.LENGTH_LONG).show();
+
+                                                                // address_display.setText("LatnLng - "+place.getLatLng()+"Latitude:"+lat+" Longitude:"+lng);
+
+                                                                // Toast.makeText(MainActivity.this, ""+lat, Toast.LENGTH_SHORT).show();
+
+
+                                                            }
+
+                                                            @Override
+                                                            public void onError(Status status) {
+
+                                                            }
+                                                        });
 
         //to post the volunteership - backend
         newPostBtn.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +238,9 @@ public class Post_Volunteership extends AppCompatActivity {
                                         {
                                             String downloadthumbUrl = taskSnapshot.getDownloadUrl().toString();
 
+                                            phone = Phone_number_ET.getText().toString();
+
+                                            Toast.makeText(Post_Volunteership.this, "Phone Number: "+phone, Toast.LENGTH_SHORT).show();
 
                                             final String temp_image_url = ""+downloadUri;
                                             final Map<String, Object> postMap = new HashMap<>();

@@ -17,8 +17,8 @@
         <activity android:name=".SignUpPage" />
 
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBQaLeF1a3YIcjVhH63DPPFugy5px92MKg" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -39,17 +39,17 @@
         <activity android:name=".HomeScreen" >
 
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
 
         <activity android:name=".SignInPage">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
 
         </activity>
