@@ -79,6 +79,9 @@ public class Post_Volunteership extends AppCompatActivity {
     EditText Phone_number_ET;
     TextView Address_bar_TV;
 
+    EditText Date_ET;
+    String date = "";
+
 
 
 
@@ -110,6 +113,8 @@ public class Post_Volunteership extends AppCompatActivity {
         newPostDesc = findViewById(R.id.new_post_desc);
         newPostBtn = findViewById(R.id.new_post_btn);
         newpostProgress = findViewById(R.id.new_post_progress);
+
+        Date_ET = findViewById(R.id.date_ET);
 
         //places fields
         Address_bar_TV = findViewById(R.id.Address_bar_TV);
@@ -143,9 +148,9 @@ public class Post_Volunteership extends AppCompatActivity {
                                                                 // TODO: Get info about the selected place.
 
 
-                                                                String s = String.valueOf(place.getAddress());
+                                                                address = String.valueOf(place.getAddress());
 
-                                                                address = (String) place.getName();
+                                                               // address = (String) place.getName();
 
                                                                 Address_bar_TV.setText(address);
 
@@ -153,7 +158,7 @@ public class Post_Volunteership extends AppCompatActivity {
 
                                                                 String latlng = String.valueOf(place.getLatLng());
 
-                                                                Toast.makeText(Post_Volunteership.this, "Address: "+s, Toast.LENGTH_SHORT).show();
+                                                               // Toast.makeText(Post_Volunteership.this, "Address: "+s, Toast.LENGTH_SHORT).show();
 
 
                                                                 int index1,index2;
@@ -195,7 +200,12 @@ public class Post_Volunteership extends AppCompatActivity {
 
                     final String desc = newPostDesc.getText().toString();
 
-                    if(!TextUtils.isEmpty(desc) && postImageUri != null)
+                     phone = Phone_number_ET.getText().toString();
+
+                     date = Date_ET.getText().toString();
+
+
+                    if(!TextUtils.isEmpty(desc) && postImageUri != null && !phone.isEmpty() && !date.isEmpty() && !address.isEmpty() )
                     {
                         newpostProgress.setVisibility(View.VISIBLE);
 
@@ -238,9 +248,11 @@ public class Post_Volunteership extends AppCompatActivity {
                                         {
                                             String downloadthumbUrl = taskSnapshot.getDownloadUrl().toString();
 
-                                            phone = Phone_number_ET.getText().toString();
 
-                                            Toast.makeText(Post_Volunteership.this, "Phone Number: "+phone, Toast.LENGTH_SHORT).show();
+
+
+
+                                            Toast.makeText(Post_Volunteership.this, "date: "+date, Toast.LENGTH_SHORT).show();
 
                                             final String temp_image_url = ""+downloadUri;
                                             final Map<String, Object> postMap = new HashMap<>();
@@ -387,6 +399,10 @@ public class Post_Volunteership extends AppCompatActivity {
                             }
                         });
 
+                    }
+                    else
+                    {
+                        Toast.makeText(Post_Volunteership.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                     }
             }
         });
