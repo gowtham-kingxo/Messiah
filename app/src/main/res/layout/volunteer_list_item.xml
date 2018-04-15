@@ -25,13 +25,14 @@
             <ImageView
                 android:id="@+id/postLikeImage"
                 android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="9dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/claps" />
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -51,6 +52,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Username"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/postUserImage_CircleView"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="18/07/2017"
+                android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/postUserImage_CircleView"
                 app:layout_constraintTop_toBottomOf="@+id/postUserName" />
 
@@ -93,8 +96,9 @@
                 android:layout_width="25dp"
                 android:layout_height="23dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
+                android:text="4"
+                android:textAlignment="center"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/postLikeImage"
@@ -102,12 +106,14 @@
 
             <TextView
                 android:id="@+id/DateTextView"
-                android:layout_width="120dp"
+                android:layout_width="140dp"
                 android:layout_height="35dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:text="TextView"
+                android:text="APR 20, 6:30 AM"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/postImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.752"
@@ -121,10 +127,11 @@
                 android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/postLikeCount"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/hand_icon_smooth" />
 
 
@@ -133,8 +140,9 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
+                android:text="7"
+                android:textAlignment="center"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/raise_hand_image_view"
@@ -143,27 +151,29 @@
             <ImageView
                 android:id="@+id/location_image_view"
                 android:layout_width="35dp"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/support_count_TV"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription"
-                app:layout_constraintVertical_bias="0.6"
+                app:layout_constraintVertical_bias="0.8"
                 app:srcCompat="@drawable/location_black_icon" />
 
             <ImageView
                 android:id="@+id/imageView6"
                 android:layout_width="35dp"
-                android:layout_height="40dp"
+                android:layout_height="45dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="40dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/location_image_view"
                 app:layout_constraintTop_toBottomOf="@+id/postDescription"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/telephone_black_icon" />
 
         </android.support.constraint.ConstraintLayout>

@@ -305,19 +305,11 @@ public class VolunteerRecyclerAdaptor extends RecyclerView.Adapter<VolunteerRecy
 
         public void updateLikesCount(int count)
         {
-            String likeString ="";
-            if(count == 1)
-            {
-                likeString = " applause";
-            }
-            else
-            {
-                likeString = " applauses";
-            }
+
 
 
             postLikeCount = mView.findViewById(R.id.postLikeCount);
-            postLikeCount.setText(""+ count + likeString);
+            postLikeCount.setText(""+ count );
         }
     }
 

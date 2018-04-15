@@ -261,6 +261,12 @@ public class Post_Volunteership extends AppCompatActivity {
                                             postMap.put("desc",desc);
                                             postMap.put("user_id", current_user_id);
                                             postMap.put("timestamp", FieldValue.serverTimestamp() );
+                                            postMap.put("phone",phone);
+                                            postMap.put("address",address);
+                                            postMap.put("date",date);
+                                            postMap.put("latitude",""+lat);
+                                            postMap.put("longitude",""+lng);
+
 
                                             final String postID = "";
 

@@ -1,12 +1,12 @@
 package greenearth.united.com.messiah;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeScreen extends AppCompatActivity  implements View.OnClickListener{
@@ -24,17 +24,31 @@ public class HomeScreen extends AppCompatActivity  implements View.OnClickListen
         firebaseFirestore = FirebaseFirestore.getInstance();
 
 
+
+
+
     }
 
     @Override
     public void onClick(View view) {
 
-        firebaseFirestore.collection("Testing").document("XTVTjbtQmSVhX2jsbwPn").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(HomeScreen.this, "Testing document deleted", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        // Creates an Intent that will load a map of San Francisco
+        Uri gmmIntentUri = Uri.parse("geo:13.0717105,80.2035242?q=13.0717105,80.2035242(volunteer activity)");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+
+
+
+
+        //Delete a document
+//        firebaseFirestore.collection("Testing").document("XTVTjbtQmSVhX2jsbwPn").delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//                Toast.makeText(HomeScreen.this, "Testing document deleted", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 //        firebaseFirestore.collection("Users").whereEqualTo("name", "Sammmy").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 //            @Override
