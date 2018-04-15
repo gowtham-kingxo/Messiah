@@ -54,6 +54,12 @@ public class AccountSetup extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private boolean isChanged = false;
 
+    private  TextView points_TV;
+    private TextView profession_TV;
+    private  TextView bloodGroup_TV;
+
+
+
 
 
     @Override
@@ -75,6 +81,12 @@ public class AccountSetup extends AppCompatActivity {
         //Corrections part 6 27:00
         Acc_Settings_ProgressBar.setVisibility(View.VISIBLE);
         Acc_Settings_Btn.setEnabled(false);
+
+        points_TV = findViewById(R.id.points_TV);
+
+        profession_TV = findViewById(R.id.AccSettingsProfession_TV);
+
+        bloodGroup_TV = findViewById(R.id.AccSettingsBlood_TV);
 
 
         Toolbar setupToolbar = findViewById(R.id.setupToolbar);
@@ -99,7 +111,17 @@ public class AccountSetup extends AppCompatActivity {
                        String name = task.getResult().getString("name");
                        String image = task.getResult().getString("image");
 
-                        Toast.makeText(AccountSetup.this, image, Toast.LENGTH_SHORT).show();
+                       String points = task.getResult().getString("points");
+
+                       points_TV.setText(points);
+
+                       String profession = task.getResult().getString("profession");
+                       profession_TV.setText(profession);
+
+                       String bloodGroup = task.getResult().getString("bloodGroup");
+                       bloodGroup_TV.setText(bloodGroup);
+
+                       // Toast.makeText(AccountSetup.this, image, Toast.LENGTH_SHORT).show();
 
                         if(image != null) {
                             mainImageURI = Uri.parse(image);

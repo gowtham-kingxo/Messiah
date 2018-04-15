@@ -211,10 +211,13 @@ public  class SignUpPage extends AppCompatActivity implements View.OnClickListen
                                             String user_ID = currentUser.getUid();
                                             Map<String, String> userMap = new HashMap<>();
 
-
+                                    long p = 0;
                                         userMap.put("name",Entered_username);
                                         userMap.put("profession",Entered_profession);
                                         userMap.put("bloodGroup",Entered_blood_group);
+
+
+                                        userMap.put("points", ""+p);
 
 
                                             firebaseFirestore.collection("Users").document(user_ID).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {

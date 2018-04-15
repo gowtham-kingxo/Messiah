@@ -89,15 +89,14 @@ public class NotificationFragment extends Fragment {
         });
 
         //here
-        Query firstQuery = firebaseFirestore.collection("Posts")
-                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
+//        Query firstQuery = firebaseFirestore.collection("Posts")
+//                .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
         try {
             currentUserId = mAuth.getCurrentUser().getUid();
 
-//            Query firstQuery = firebaseFirestore.collection("Posts")
-//                    .whereEqualTo("user_id", currentUserId)
-//
-//                    .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
+            Query firstQuery = firebaseFirestore.collection("Users")
+                    .document(currentUserId).collection("MyPosts")
+                    .orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
 
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
@@ -106,7 +105,10 @@ public class NotificationFragment extends Fragment {
                     if (mAuth.getCurrentUser() != null) {
 //                        if(isFirstPageFirstLoad)
 //                        {
-                        lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+                        if(documentSnapshots.size()>0) {
+                            lastVisible = documentSnapshots.getDocuments().get(documentSnapshots.size() - 1);
+                        }
+
 //                        }
 
                         for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
@@ -152,18 +154,18 @@ public class NotificationFragment extends Fragment {
     {
 
         //here
-        Query nextQuery = firebaseFirestore.collection("Posts")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .startAfter(lastVisible)
-                .limit(3);
+//        Query nextQuery = firebaseFirestore.collection("Posts")
+//                .orderBy("timestamp", Query.Direction.DESCENDING)
+//                .startAfter(lastVisible)
+//                .limit(3);
         try {
             currentUserId = mAuth.getCurrentUser().getUid();
 
-//            Query nextQuery = firebaseFirestore.collection("Posts")
-//                    .whereEqualTo("user_id", currentUserId)
-//                    .orderBy("timestamp", Query.Direction.DESCENDING)
-//                    .startAfter(lastVisible)
-//                    .limit(3);
+            Query nextQuery = firebaseFirestore.collection("Users")
+                    .document(currentUserId).collection("MyPosts")
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .startAfter(lastVisible)
+                    .limit(3);
 
             nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 

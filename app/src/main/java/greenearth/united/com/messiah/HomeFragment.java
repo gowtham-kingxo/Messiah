@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
                 if(reachedBottom)
                 {
                     String desc = lastVisible.getString("desc");
-                    Toast.makeText(container.getContext(), "Reched "+desc, Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(container.getContext(), "Reached "+desc, Toast.LENGTH_SHORT).show();
 
                     loadMorePost();
                 }

@@ -177,7 +177,7 @@ public class Post_Volunteership extends AppCompatActivity {
 
                                                                lng = Double.parseDouble(latlng.substring(index1, index2));
 
-                                                                Toast.makeText(Post_Volunteership.this, "Lat: "+lat+" Lng: "+lng, Toast.LENGTH_LONG).show();
+                                                                //Toast.makeText(Post_Volunteership.this, "Lat: "+lat+" Lng: "+lng, Toast.LENGTH_LONG).show();
 
                                                                 // address_display.setText("LatnLng - "+place.getLatLng()+"Latitude:"+lat+" Longitude:"+lng);
 
@@ -252,7 +252,7 @@ public class Post_Volunteership extends AppCompatActivity {
 
 
 
-                                            Toast.makeText(Post_Volunteership.this, "date: "+date, Toast.LENGTH_SHORT).show();
+                                          //  Toast.makeText(Post_Volunteership.this, "date: "+date, Toast.LENGTH_SHORT).show();
 
                                             final String temp_image_url = ""+downloadUri;
                                             final Map<String, Object> postMap = new HashMap<>();
@@ -310,11 +310,11 @@ public class Post_Volunteership extends AppCompatActivity {
                                                                                         @Override
                                                                                         public void onFailure(@NonNull Exception e) {
 
-                                                                                            Toast.makeText(Post_Volunteership.this, "Falied same post ID", Toast.LENGTH_SHORT).show();
+                                                                                           // Toast.makeText(Post_Volunteership.this, "Falied same post ID", Toast.LENGTH_SHORT).show();
                                                                                         }
                                                                                     });
 
-                                                                                Toast.makeText(Post_Volunteership.this, "Post id :  "+temp_postID, Toast.LENGTH_LONG).show();
+                                                                               // Toast.makeText(Post_Volunteership.this, "Post id :  "+temp_postID, Toast.LENGTH_LONG).show();
                                                                             }
                                                                         }
 
@@ -364,7 +364,7 @@ public class Post_Volunteership extends AppCompatActivity {
 //                                                }
 //                                            });
 
-                                            Toast.makeText(Post_Volunteership.this, "toast post-id: "+temp_postID, Toast.LENGTH_SHORT).show();
+                                         //   Toast.makeText(Post_Volunteership.this, "toast post-id: "+temp_postID, Toast.LENGTH_SHORT).show();
 
 //                                            firebaseFirestore.collection("Users").document(current_user_id).collection("MyPosts").document(temp_postID+"66").set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
 //                                                @Override
