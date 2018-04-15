@@ -36,7 +36,7 @@ public class NotificationFragment extends Fragment {
 
     private FirebaseFirestore firebaseFirestore;
 
-    private VolunteerRecyclerAdaptor volunteerRecyclerAdaptor;
+    private MyPostRecyclerAdaptor myPostRecyclerAdaptor;
 
     private FirebaseAuth mAuth;
 
@@ -64,10 +64,10 @@ public class NotificationFragment extends Fragment {
         volunteershp_list_view = view.findViewById(R.id.volunteership_list_view);
 
 
-        volunteerRecyclerAdaptor = new VolunteerRecyclerAdaptor(volunteership_list);
+        myPostRecyclerAdaptor = new MyPostRecyclerAdaptor(volunteership_list);
 
         volunteershp_list_view.setLayoutManager(new LinearLayoutManager(getActivity()));
-        volunteershp_list_view.setAdapter(volunteerRecyclerAdaptor);
+        volunteershp_list_view.setAdapter(myPostRecyclerAdaptor);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -125,7 +125,7 @@ public class NotificationFragment extends Fragment {
 //                                        volunteership_list.add(0, volunteerPost);
 //                                    }
 
-                                    volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                    myPostRecyclerAdaptor.notifyDataSetChanged();
                                 }
                             }
                         }
@@ -188,7 +188,7 @@ public class NotificationFragment extends Fragment {
 
                                         volunteership_list.add(volunteerPost);
 
-                                        volunteerRecyclerAdaptor.notifyDataSetChanged();
+                                        myPostRecyclerAdaptor.notifyDataSetChanged();
                                     }
                                 }
                             }
